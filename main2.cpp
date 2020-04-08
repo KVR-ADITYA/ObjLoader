@@ -4,7 +4,7 @@
 
 #include<GL/glut.h>
 
-#include "ObjectLoader.h"
+#include "ObjectLoader2.8.h"
 
 using namespace std;
 
@@ -41,7 +41,7 @@ GLfloat lightPosition[]       = { 0.0, 1.0, 1.0, 0.0 };
 // -----------------------------------------------------
 // *** Important *** : Change the file name if necessary
 // -----------------------------------------------------
-string filename = "./data/table.obj";
+string filename = "./data/sphere.obj";
 ObjModelLoader *monkeyModel = NULL;
 // ------------------------------------------------
 

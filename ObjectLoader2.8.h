@@ -54,9 +54,10 @@ class ObjModelLoader
     private:
         string filename = "";
 
+        vector<vector<float>*> *normals = new vector<vector<float>*>;
         vector<vector<float>*> *vertices = new vector<vector<float>*>;
         vector<vector<int>*>   *faces    = new vector<vector<int>*>;
-
+        vector<vector<int>*> *faceNorms  = new vector<vector<int>*>;
         /**
          *  Split string to individual strings according to given option
          *
@@ -166,6 +167,7 @@ ObjModelLoader::ObjModelLoader(string filename)
         // If current line has information about vertices
         if (parameters->at(0) == "v")
         {
+
             // Remove 'v' and keep the rest of the numbers
             parameters->erase(parameters->begin());
 
@@ -176,9 +178,27 @@ ObjModelLoader::ObjModelLoader(string filename)
                 // Convert each x, y, z coordinate (as string) to float value
                 currentPoint->push_back(this->GetFloatFromString(parameters->at(index)));
             }
-
+            // cout<<"HI"<<endl;
             // Save that point on "vertices"
             vertices->push_back(currentPoint);
+        }
+        if (parameters->at(0) == "vn")
+        {
+
+            // Remove 'v' and keep the rest of the numbers
+            parameters->erase(parameters->begin());
+
+            vector<float> *currentNorm = new vector<float>;
+
+            for (int index = 0; index < parameters->size(); index++)
+            {
+                // Convert each x, y, z coordinate (as string) to float value
+                currentNorm->push_back(this->GetFloatFromString(parameters->at(index)));
+                // cout<<this->GetFloatFromString(parameters->at(index))<<" ";
+            }
+            // cout<<endl;
+            // Save that point on "vertices"
+            normals->push_back(currentNorm);
         }
         // If current line has information about faces
         else if (parameters->at(0) == "f")
@@ -187,19 +207,29 @@ ObjModelLoader::ObjModelLoader(string filename)
             parameters->erase(parameters->begin());
 
             vector<int> *vertexIndexes = new vector<int>;
+            vector<int> *normIndexes = new vector<int>;
 
             for (int index = 0; index < parameters->size(); index++)
             {
+                vector<string> *token = this->GetSplittedStrings(parameters->at(index), '/');
                 // Convert each face index (as string) to integer
-                int faceIndex = this->GetFloatFromString(parameters->at(index));
-
+                int faceIndex = this->GetFloatFromString(token->at(0));
+                // token = strtok(NULL, "/");
+                // token = strtok(NULL, "/");
+                int facen = this->GetFloatFromString(token->at(2));
                 // Our obj file uses indexing from 1. So, we are decrementing 1 to make it start from 0
                 vertexIndexes->push_back(--faceIndex);
-                cout<<"HI"<<vertexIndexes->at(vertexIndexes->size()-1)<<endl;
+                normIndexes->push_back(--facen);
+                // cout<<"HI"<<vertexIndexes->at(vertexIndexes->size()-1)<<endl;
+                // cout<<facen<<" ";
+                delete token;
             }
+
+            // cout<<endl;
 
             // And finally saving faces information
             faces->push_back(vertexIndexes);
+            faceNorms->push_back(normIndexes);
         }
 
         // Freeing unnecessary memory
@@ -272,7 +302,7 @@ void ObjModelLoader::Draw()
             }
 
             // When we got all the 3 point/vertices, then calculate normal and draw the triangle
-            if (j == 2)
+            if (j == 3)
             {
                 // Calculating normal
                     // calculate Vector1 and Vector2

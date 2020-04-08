@@ -41,7 +41,7 @@ GLfloat lightPosition[]       = { 0.0, 1.0, 1.0, 0.0 };
 // -----------------------------------------------------
 // *** Important *** : Change the file name if necessary
 // -----------------------------------------------------
-string filename = "./data/torus.obj";
+string filename = "./data/table.obj";
 ObjModelLoader *monkeyModel = NULL;
 // ------------------------------------------------
 

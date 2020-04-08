@@ -195,9 +195,8 @@ ObjModelLoader::ObjModelLoader(string filename)
 
                 // Our obj file uses indexing from 1. So, we are decrementing 1 to make it start from 0
                 vertexIndexes->push_back(--faceIndex);
-                cout<<vertexIndexes->at(vertexIndexes->size()-1)<<" ";
+                cout<<"HI"<<vertexIndexes->at(vertexIndexes->size()-1)<<endl;
             }
-            cout<<endl;
 
             // And finally saving faces information
             faces->push_back(vertexIndexes);
@@ -263,12 +262,13 @@ void ObjModelLoader::Draw()
                     coord3[2] = (vertices->at(index))->at(2);
                     break;
 
-                // If 4rd vertex, then save it to coord3
+                // If 3rd vertex, then save it to coord3
                 case 3:
                     coord4[0] = (vertices->at(index))->at(0);
                     coord4[1] = (vertices->at(index))->at(1);
                     coord4[2] = (vertices->at(index))->at(2);
                     break;
+
             }
 
             // When we got all the 3 point/vertices, then calculate normal and draw the triangle

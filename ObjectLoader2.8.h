@@ -49,7 +49,7 @@ class ObjModelLoader
         /**
          *  Draws model from *.obj file.
          */
-        void Draw();
+        void Draw(float zoomf);
 
     private:
         string filename = "";
@@ -247,7 +247,7 @@ ObjModelLoader::~ObjModelLoader()
     delete this->vertices;
 }
 
-void ObjModelLoader::Draw()
+void ObjModelLoader::Draw(float zoomf)
 {
     // We will draw faces as triangles
     glBegin(GL_QUADS);
@@ -334,13 +334,13 @@ void ObjModelLoader::Draw()
                 normal = norm;
 
                 // Setting normal for these vertices
-                glNormal3f(normal[0], normal[2], normal[2]);
+                // glNormal3f(normal[0], normal[2], normal[2]);
 
                 // Drawing the triangle as a face
-                glVertex3f(coord1[0], coord1[1], coord1[2]);
-                glVertex3f(coord2[0], coord2[1], coord2[2]);
-                glVertex3f(coord3[0], coord3[1], coord3[2]);
-                glVertex3f(coord4[0], coord4[1], coord4[2]);
+                glVertex3f(coord1[0]*zoomf, coord1[1]*zoomf, coord1[2]*zoomf);
+                glVertex3f(coord2[0]*zoomf, coord2[1]*zoomf, coord2[2]*zoomf);
+                glVertex3f(coord3[0]*zoomf, coord3[1]*zoomf, coord3[2]*zoomf);
+                glVertex3f(coord4[0]*zoomf, coord4[1]*zoomf, coord4[2]*zoomf);
 
             }
         }

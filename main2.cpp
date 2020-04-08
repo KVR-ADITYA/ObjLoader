@@ -6,6 +6,8 @@
 
 #include "ObjectLoader2.8.h"
 
+float zoomf=1;
+
 using namespace std;
 
 string title = "The Scene";
@@ -45,7 +47,15 @@ string filename = "./data/sphere.obj";
 ObjModelLoader *monkeyModel = NULL;
 // ------------------------------------------------
 
+float rotateAnglex = 0.0f;      //initial x,y,z angles
+float rotateAngley = 0.0f;
+float rotateAnglez = 0.0f;
 float rotateAngle = 0.0f;
+
+
+float xtranslate = 0.0f;        //initial position of the viewer
+float ytranslate = 0.0f;
+float ztranslate = 0.0f;
 
 
 // void zoom(double factor)
@@ -88,7 +98,7 @@ void DrawScene()
 
     glMatrixMode(GL_MODELVIEW);                             // Switch to the drawing perspective
     glLoadIdentity();                                       // Reset the drawing perspective
-    glTranslatef(0.0f, 0.0f, -cameraDistance);              // Move forward 5 units
+    glTranslatef(xtranslate, ytranslate, -cameraDistance+ztranslate);              // Move forward 5 units
 
     // Adding light
     if (isLightingEnabled)
@@ -126,11 +136,13 @@ void DrawScene()
     glPushMatrix();
 
     // Drawing a cube
-    glColor3f(0.60, 0.60, 0.60);                            // Color: Gray
-    glRotatef(rotateAngle, false, true, false);
+    glColor3f(0.60, 0.60, 0.60);   
+    glRotatef(rotateAnglex, true, false, false);
+    glRotatef(rotateAngley, false, true, false);                         // Color: Gray
+    glRotatef(rotateAnglez, false, false, true);
 
     // ------------------------------------------------
-    monkeyModel->Draw();
+    monkeyModel->Draw(zoomf);
     // ------------------------------------------------
 
     glPopMatrix();
@@ -141,7 +153,7 @@ void DrawScene()
 
 void Update(int value)
 {
-    rotateAngle += 0.5f;
+    rotateAngle = 0.5f;
 
     if ((rotateAngle > 360) || (rotateAngle < -360))
     {
@@ -159,6 +171,7 @@ void Update(int value)
 void HandleKeypress(unsigned char key, int x, int y) {
     switch (key)
     {
+        
         // Escape key
         case KEY_ESCAPE:
             exit(EXIT_SUCCESS);
@@ -169,9 +182,110 @@ void HandleKeypress(unsigned char key, int x, int y) {
             isWireframeModeEnabled = !isWireframeModeEnabled;
             isLightingEnabled      = !isLightingEnabled;
             break;
+
+        //rotate along x-axis by 5 degrees
+        case 'a':
+            rotateAnglex+=5;
+            break; 
+
+        //rotate along x-axis by -5 degrees
+        case 's':
+            rotateAnglex-=5;
+            break;
+
+        //rotate along y-axis by 5 degrees
+        case 'd':
+            rotateAngley+=5;
+            break;   
+
+        //rotate along y-axis by -5 degrees
+        case 'f':
+            rotateAngley-=5;
+            break; 
+
+        //rotate along z-axis by 5 degrees
+        case 'g':
+            rotateAnglez+=5;
+            break;   
+
+        //rotate along z-axis by -5 degrees
+        case 'h':
+            rotateAnglez-=5;
+            break;
+
+        //translate along z-axis by 1 unit
+        case '+':
+            if(ztranslate<3)    ztranslate+=1;
+            break;
+
+        //translate along z-axis by -1 unit
+        case '-':
+            if(ztranslate>-8) ztranslate-=1;
+            break;
     }
+    glutPostRedisplay();
 }
 
+void MouseClick(int btn, int state, int x, int y) {
+  if (state == GLUT_DOWN) {
+    switch(btn) {
+    case GLUT_LEFT_BUTTON:
+      
+      break;
+    case GLUT_RIGHT_BUTTON:
+      
+      break;
+    case GLUT_MIDDLE_BUTTON:        //set back to default
+        zoomf = 1.0;
+        rotateAnglex = 0.0f;      //initial x,y,z angles
+        rotateAngley = 0.0f;
+        rotateAnglez = 0.0f;
+
+        xtranslate = 0.0f;        //initial position of the viewer
+        ytranslate = 0.0f;
+        ztranslate = 0.0f;
+        glutPostRedisplay();
+      break;
+
+    //zooms in by a factor of 0.1x
+    case 3:  
+        if(zoomf<1.4)  zoomf+=0.1;
+        break;
+    
+    //zooms out by a factor of 0.1x
+    case 4:
+        if(zoomf>0.6)  zoomf-=0.1;
+        break;
+    }
+  }
+}
+
+void SpecialInput(int key, int x, int y)
+{
+    switch(key)
+    {
+        //translate along y-axis by 1 unit
+        case GLUT_KEY_UP:
+            if(ytranslate>-5)    ytranslate-=1;
+        break;
+
+        //translate along y-axis by -1 unit
+        case GLUT_KEY_DOWN:
+            if(ytranslate<5)    ytranslate+=1;
+        break;
+
+        //translate along x-axis by 1 unit
+        case GLUT_KEY_LEFT:
+            if(xtranslate<5)    xtranslate+=1;
+        break;
+
+        //translate along x-axis by -1 unit
+        case GLUT_KEY_RIGHT:
+            if(xtranslate>-5)   xtranslate-=1;
+        break;
+    }
+    glutPostRedisplay();
+}
 
 
 // Called when the window is resized
@@ -218,7 +332,9 @@ int main(int argc, char* argv[])
     glutDisplayFunc(DrawScene);
     glutReshapeFunc(HandleResize);
     glutKeyboardFunc(HandleKeypress);
-    glutTimerFunc(timeForUpdatingFrame, Update, 0);     // Add a timer
+    glutSpecialFunc(SpecialInput);
+    glutMouseFunc(MouseClick);
+    // glutTimerFunc(timeForUpdatingFrame, Update, 0);     // Add a timer
 
     glutMainLoop();
     return EXIT_SUCCESS;

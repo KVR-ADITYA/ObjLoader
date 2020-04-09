@@ -37,13 +37,13 @@ GLfloat colorWhite[]          = { 1.00, 1.00, 1.00, 1.0 };  // Color: White
 GLfloat colorDarkGray[]       = { 0.10, 0.10, 0.10, 1.0 };  // Color: Dark gray
 GLfloat colorLightGray[]      = { 0.75, 0.75, 0.75, 1.0 };  // Color: Light gray
 
-GLfloat lightPosition[]       = { 0.0, 1.0, 1.0, 0.0 };
+GLfloat lightPosition[]       = { -20.0, -10.0, -10.0, 10.0 };
 
 /* Model Settings */
 // -----------------------------------------------------
 // *** Important *** : Change the file name if necessary
 // -----------------------------------------------------
-string filename = "./data/sphere.obj";
+string filename = "./data/Room.obj";
 ObjModelLoader *monkeyModel = NULL;
 // ------------------------------------------------
 

@@ -29,22 +29,34 @@ bool isWireframeModeEnabled   = false;                      // Default: false
 /* Lighting Settings */
 // Set material properties for lighting
 bool isLightingEnabled        = true,
-     isSpecularLightEnabled   = false;
+     isSpecularLightEnabled   = true;
 
-float shininess               = 50.0f;                      // Shininess: 0 to 128;
+float shininess               = 10.0f;                      // Shininess: 0 to 128;
 
 GLfloat colorWhite[]          = { 1.00, 1.00, 1.00, 1.0 };  // Color: White
 GLfloat colorDarkGray[]       = { 0.10, 0.10, 0.10, 1.0 };  // Color: Dark gray
 GLfloat colorLightGray[]      = { 0.75, 0.75, 0.75, 1.0 };  // Color: Light gray
 
-GLfloat lightPosition[]       = { -20.0, -10.0, -10.0, 10.0 };
+GLfloat colorMarron[]          = { 0.50, 0.50, 0.50, 1.0 };  // Color: White
+GLfloat colorDarkMarron[]       = { 1.00, 1.00, 1.00, 1.0 };  // Color: Dark gray
+GLfloat colorLightMarron[]      = { 0.800000, 0.311454, 0.003955, 1.0 };  // Color: Light gray
+
+GLfloat lightPosition[]       = { 0.0, 0.0, 10.0, 1.0 };
 
 /* Model Settings */
 // -----------------------------------------------------
 // *** Important *** : Change the file name if necessary
 // -----------------------------------------------------
-string filename = "./data/Room.obj";
-ObjModelLoader *monkeyModel = NULL;
+string filename1 = "./data/Table_Room.obj";
+string filename2 = "./data/Chair_Room.obj";
+string filename3 = "./data/Bed_Room.obj";
+string filename4 = "./data/Walls_Room.obj";
+ObjModelLoader *tableModel = NULL;
+ObjModelLoader *chairModel = NULL;
+ObjModelLoader *bedModel = NULL;
+ObjModelLoader *wallsModel = NULL;
+
+//wallsModel  Chairmodel bedmodel
 // ------------------------------------------------
 
 float rotateAnglex = 0.0f;      //initial x,y,z angles
@@ -136,13 +148,41 @@ void DrawScene()
     glPushMatrix();
 
     // Drawing a cube
-    glColor3f(0.60, 0.60, 0.60);   
+    glColor3f(0.800000, 0.311454, 0.003955);   
     glRotatef(rotateAnglex, true, false, false);
     glRotatef(rotateAngley, false, true, false);                         // Color: Gray
     glRotatef(rotateAnglez, false, false, true);
 
     // ------------------------------------------------
-    monkeyModel->Draw(zoomf);
+    //adding color
+    if (isLightingEnabled)
+    {
+        // Set lighting intensity and color
+        glLightfv(GL_LIGHT0, GL_AMBIENT,  colorDarkMarron );
+        glLightfv(GL_LIGHT0, GL_DIFFUSE,  colorLightMarron);
+
+        if (isSpecularLightEnabled)
+        {
+            glLightfv(GL_LIGHT0, GL_SPECULAR, colorWhite);
+
+            // Setting material properties
+            glMaterialfv(GL_FRONT, GL_SPECULAR, colorMarron);
+            glMaterialf(GL_FRONT, GL_SHININESS, shininess); // Shininess: 0 to 128
+        }
+
+        // Set the light position
+        glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    }
+
+    tableModel->Draw(zoomf);
+    glColor3f(0.049348, 0.060411, 0.800000);
+    chairModel->Draw(zoomf);
+    glColor3f(0.800000, 0.311454, 0.003955);
+    bedModel->Draw(zoomf);
+    glColor3f(0.654110, 0.800000, 0.248259);
+    wallsModel->Draw(zoomf);
+    
+    //wallsModel  Chairmodel bedmodel
     // ------------------------------------------------
 
     glPopMatrix();
@@ -325,7 +365,12 @@ int main(int argc, char* argv[])
     }
 
     // ------------------------------------------------
-    monkeyModel = new ObjModelLoader(filename);
+    tableModel = new ObjModelLoader(filename1);
+    chairModel = new ObjModelLoader(filename2);
+    bedModel = new ObjModelLoader(filename3);
+    wallsModel = new ObjModelLoader(filename4);
+    
+    //wallsModel  Chairmodel bedmodel
     // ------------------------------------------------
 
     // Set handler functions

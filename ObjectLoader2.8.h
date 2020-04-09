@@ -334,7 +334,7 @@ void ObjModelLoader::Draw(float zoomf)
                 normal = norm;
 
                 // Setting normal for these vertices
-                // glNormal3f(normal[0], normal[2], normal[2]);
+                glNormal3f(normal[0], normal[2], normal[2]);
 
                 // Drawing the triangle as a face
                 glVertex3f(coord1[0]*zoomf, coord1[1]*zoomf, coord1[2]*zoomf);
